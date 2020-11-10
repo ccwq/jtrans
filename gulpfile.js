@@ -66,7 +66,18 @@ const options = _.merge({}, {
     //true会删除未引用的js，导致文件体积增大好多
     rollupTreeShake: true,
 
+    gulpSrcOptions:{
+        base:"--"
+    },
 }, package.jtrans);
+
+
+//
+if (options.gulpSrcOptions.base == "--") {
+    options.gulpSrcOptions.base = options.src;
+}
+
+
 
 const SRC_DIR = options.src;
 const DIST_DIR = options.dist;
@@ -88,11 +99,6 @@ const golbForAllPug  = [`${SRC_DIR}**/*.pug`];
 
 const golbForEs  =  [`${SRC_DIR}**/!($*).?(es|mjs)`];
 const golbForAllEs  =  [`${SRC_DIR}**/*.?(es|mjs|html|pug)`];
-
-
-
-// const srcOptions = {base: "src"};
-const srcOptions = {};
 
 
 
@@ -157,7 +163,7 @@ function pugChain(gulpIns){
 
 gulp.task(':pug', async function () {
     console.log(chalk.green("开始编译pug"));
-    await pugChain(gulp.src(golbForPug, srcOptions))
+    await pugChain(gulp.src(golbForPug, options.gulpSrcOptions))
     console.log(chalk.green("pug编译结束"));
 });
 
@@ -165,7 +171,7 @@ const pug = require('pug');
 gulp.task(':es', async function () {
     console.log(chalk.green("开始编译es"));
     await gulp
-        .src(golbForEs, srcOptions)
+        .src(golbForEs, options.gulpSrcOptions)
         .pipe(plugins.plumber())
         .pipe(fileinfo())
 
@@ -312,7 +318,7 @@ const less = require('gulp-less');
 gulp.task(":less", async function(){
     console.log(chalk.green("开始编译less"));
     await gulp
-        .src(golbForLess, srcOptions)
+        .src(golbForLess, options.gulpSrcOptions)
         //.pipe(cache(":less"))
         .pipe(sourcemaps.init())
         .pipe(fileinfo())
@@ -379,7 +385,7 @@ function copyChain(glupIns){
 //复制其他类型文件
 gulp.task(":copy", async function () {
     console.log(chalk.green("开始复制非编译文件"));
-    await copyChain(gulp.src(OTHER_FILE_SRC));
+    await copyChain(gulp.src(OTHER_FILE_SRC, options.gulpSrcOptions));
     console.log(chalk.green("非编译文件复制结束"));
 });
 
@@ -400,15 +406,16 @@ gulp.task(":live-server", async function(){
 })
 
 gulp.task(":clean-dist", async function(){
+
     console.log(chalk.green("开始清空"));
-    // await gulp
-    //     .src([
-    //         `${DIST_DIR}!(META-INF|WEB-INF)/**`,
-    //         `${DIST_DIR}*`,
-    //     ],{read:false})
-    //     .pipe(
-    //         rm({ async: true })
-    //     )
+    await gulp
+        .src([
+            `${DIST_DIR}!(META-INF|WEB-INF)/**`,
+            `${DIST_DIR}*`,
+        ],{read:false})
+        .pipe(
+            rm({ async: true })
+        )
     console.log(chalk.green("清空完成"));
 });
 
@@ -424,21 +431,22 @@ gulp.task(":zip-dist", async function(){
  * 编译文件到设置的目录
  */
 gulp.task("build",async function(){
-    console.log(chalk.green("删除文件"));
-    await new Promise((resolve, reject) => {
-        shell.exec("gulp :clean-dist", {async: false}, function(code, stdout, stderr) {
-            if (code) {
-                console.log(chalk.red(stdout));
-                reject(stderr);
-            } else {
-                console.log(chalk.blue(stdout));
-                resolve(stdout);
-            }
+
+    if (options.clean_dist_when_build) {
+        console.log(chalk.green("删除文件..."));
+        await new Promise((resolve, reject) => {
+            shell.exec("gulp :clean-dist", {async: false}, function(code, stdout, stderr) {
+                if (code) {
+                    console.log(chalk.red(stdout));
+                    reject(stderr);
+                } else {
+                    console.log(chalk.blue(stdout));
+                    resolve(stdout);
+                }
+            })
         })
-    })
-
-    console.log(chalk.green("开始复制文件"));
-
+        console.log(chalk.green("删除完成"));
+    }
     await gulp.series(
         ":copy",
         ":es",
