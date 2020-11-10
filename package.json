@@ -1,5 +1,5 @@
 {
-    "name": "jtrsan",
+    "name": "jtrans",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
@@ -9,11 +9,12 @@
         "clean_dist_when_build": false,
         "rollupTreeShake": true,
         "gulpSrcOptions": {
-            "base":"--"
+            "base": "--"
         }
     },
-    "path for product": "dist",
-    "path for develop": "src",
+    "bin": {
+        "jtrans": "bin/jtrans"
+    },
     "scripts": {
         "build": "gulp build",
         "build-no-clean": "gulp build-no-clean",
@@ -21,13 +22,6 @@
         "watch": "gulp watch-them"
     },
     "dependencies": {
-        "ioxx": "3.0.8",
-        "ipro": "^1.0.34",
-        "jquery": "^3.4.1",
-        "lockr": "^0.8.5",
-        "luss": "^0.6.7"
-    },
-    "devDependencies": {
         "lodash": "^4.17.11",
         "core-js": "^3.6.5",
         "gulp-zip": "^5.0.2",

@@ -59,17 +59,34 @@ const package = require("./package.json");
 
 const options = _.merge({}, {
 
+    //源
     src: "src",
+
+    //目标
     dist: "dist",
-    clean_dist_when_build:false,
+
+    //build之前是否清空
+    buildClean:false,
 
     //true会删除未引用的js，导致文件体积增大好多
-    rollupTreeShake: true,
+    treeShake: true,
 
+
+    //请查看glup的文档gulp.src(src,option)
     gulpSrcOptions:{
         base:"--"
     },
+
+    //编译到dist的路径去除路径前缀
+    //请查看glup的文档gulp.src(src,option) option.base
+    srcBase:"--"
 }, package.jtrans);
+
+
+
+if (srcBase !== "--") {
+    options.gulpSrcOptions.base = srcBase;
+}
 
 
 //
@@ -180,7 +197,7 @@ gulp.task(':es', async function () {
             rollup(
                 {
                     //打开此项会导致文件未被引用的变量或者函数被删除
-                    treeshake: options.rollupTreeShake,
+                    treeshake: options.treeShake,
 
                     // There is no `input` option as rollup integrates into the gulp pipeline
                     plugins: [
@@ -432,7 +449,7 @@ gulp.task(":zip-dist", async function(){
  */
 gulp.task("build",async function(){
 
-    if (options.clean_dist_when_build) {
+    if (options.buildClean) {
         console.log(chalk.green("删除文件..."));
         await new Promise((resolve, reject) => {
             shell.exec("gulp :clean-dist", {async: false}, function(code, stdout, stderr) {
