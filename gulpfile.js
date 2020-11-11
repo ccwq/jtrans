@@ -216,8 +216,13 @@ module.exports = {
                             plugins: [
                                 rollupResolve(),
                                 rollupCommonjs(),
-                                babel({ // 添加babel插件
+                                babel({
+
+                                    // babel的配置
+                                    // https://www.babeljs.cn/docs/next/options#configfile
                                     runtimeHelpers:true,
+                                    babelrc:false,
+                                    configFile:false,
                                     "presets": [
                                         "@babel/preset-env"
                                     ],
