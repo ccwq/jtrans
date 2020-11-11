@@ -1,5 +1,6 @@
 const gulp = require("gulp");
 const {createTask} = require("./gulpfile");
+const _ = require("lodash");
 
 
 const rawArgv = process.argv.slice(2);
@@ -28,16 +29,17 @@ module.exports = {
             task = "build";
         }
 
-        // console.log(args);
-        //
-        // console.log("arg", ...rest);
-        // //console.log(process,  7789);
-        // console.log(process.env.INIT_CWD,  7789);
-        // gulp.start("build");
+        let _args = Object.keys(args).reduce((result, key) =>{
+            if(/^(-|_)/.test(key)) {
+                result[key] = args[key];
+            }else{
+                result[_.camelCase(key)] = args[key];
+            }
+            return result;
+        }, {});
 
-        createTask(args);
+        createTask(_args);
 
         gulp.series(task)();
-
     }
 }
