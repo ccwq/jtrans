@@ -226,6 +226,20 @@ module.exports = {
                                     "presets": [
                                         "@babel/preset-env"
                                     ],
+                                    plugins:[
+
+                                        //await async
+                                        "@babel/plugin-transform-runtime",
+
+                                        //箭头函数
+                                        "@babel/plugin-transform-arrow-functions",
+
+                                        //class属性定义
+                                        "@babel/plugin-proposal-class-properties",
+
+                                        //可选链
+                                        "@babel/plugin-proposal-optional-chaining",
+                                    ],
                                     exclude: "node_modules/**" // 排除node_modules下的文件
                                 }),
                                 rollupPostcss(),
