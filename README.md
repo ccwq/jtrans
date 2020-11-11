@@ -5,7 +5,14 @@
 ---
 
 -   编译es6789到es5
-    -   自动编译js中{pug[...]pug}的pug代码为html
+
+    -   支持async/await
+    
+    -   支持class属性定义
+    
+    -   支持可选链
+    
+    -   私有特性,自动编译js中{pug[...]pug}的pug代码为html
         
         ```js
         
