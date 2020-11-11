@@ -2,7 +2,7 @@
 const gulp = require('gulp');
 // const babel = require('gulp-babel');
 const zip = require('gulp-zip');
-const rm = require( 'gulp-rm' )
+const gulpClean = require('gulp-clean');
 const watch = require('gulp-watch');
 const rollup = require('gulp-better-rollup');
 const babel = require('rollup-plugin-babel')
@@ -18,9 +18,6 @@ const trim = function(string){
 
 //js压缩和sourcemap
 var sourcemaps = require('gulp-sourcemaps');
-
-
-const shell = require('shelljs');
 
 const chalk = require('chalk');
 
@@ -435,21 +432,23 @@ module.exports = {
             });
         })
 
+
         gulp.task(":clean-dist", async function(){
 
             console.log(chalk.green("开始清空"));
-            await gulp
+            return gulp
                 .src([
-                    `${DIST_DIR}!(META-INF|WEB-INF)/**`,
                     `${DIST_DIR}*`,
-                ],{read:false})
+                ], {read: false})
                 .pipe(
-                    rm({ async: true })
+                    gulpClean()
                 )
+            ;
             console.log(chalk.green("清空完成"));
         });
 
-//压缩dist
+
+        //压缩dist
         gulp.task(":zip-dist", async function(){
             gulp.src('src/**')
                 .pipe(zip('template.zip'))
@@ -462,27 +461,19 @@ module.exports = {
          */
         gulp.task("build",async function(){
 
-            if (options.buildClean) {
-                console.log(chalk.green("删除文件..."));
-                await new Promise((resolve, reject) => {
-                    shell.exec("gulp :clean-dist", {async: false}, function(code, stdout, stderr) {
-                        if (code) {
-                            console.log(chalk.red(stdout));
-                            reject(stderr);
-                        } else {
-                            console.log(chalk.blue(stdout));
-                            resolve(stdout);
-                        }
-                    })
-                })
-                console.log(chalk.green("删除完成"));
-            }
-            await gulp.series(
+            let taskLs = [
                 ":copy",
                 ":es",
                 ":pug",
                 ":less"
-            )()
+            ]
+
+
+            if (options.buildClean) {
+                taskLs.unshift(":clean-dist")
+            }
+
+            await gulp.series(...taskLs)();
         });
 
 
