@@ -10,6 +10,9 @@ const _ = require("lodash");
 const rollupResolve = require("@rollup/plugin-node-resolve").default;
 const rollupCommonjs = require("@rollup/plugin-commonjs");
 const rollupPostcss = require("rollup-plugin-postcss");
+const rollupVue = require("rollup-plugin-vue");
+const rollupLess = require("rollup-plugin-less");
+
 const pipeSelf = require("gulp-empty");
 
 const trim = function(string){
@@ -209,15 +212,21 @@ module.exports = {
                 .pipe(isDev?sourcemaps.init():pipeSelf())
                 .pipe(plugins.plumber())
                 .pipe(fileinfo())
-
                 .pipe(
                     rollup(
                         {
+
                             //打开此项会导致文件未被引用的变量或者函数被删除
                             treeshake: options.treeShake,
 
                             // There is no `input` option as rollup integrates into the gulp pipeline
                             plugins: [
+
+                                rollupVue({
+                                    css: true,
+                                    compileTemplate: true
+                                }),
+                                rollupLess({}),
                                 rollupResolve(),
                                 rollupCommonjs(),
                                 babel({
