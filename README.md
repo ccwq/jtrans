@@ -2,6 +2,8 @@
 
 前端开发环境
 
+---
+
 -   编译es6789到es5
     -   自动编译js中{pug[...]pug}的pug代码为html
         
@@ -30,3 +32,43 @@
 
 
 -   pug到html
+
+
+---
+
+安装
+
+```
+npm install jtrans
+
+```
+或者
+```
+yarn add jtrans
+```
+全局安装
+```
+npm install -g jtrans
+
+```
+
+使用
+```
+jtrans dev
+
+```
+
+所有配置
+
+```bash
+jtrans dev
+
+jtrans watch
+
+
+# 所有配置
+
+jtrans build --src=src --dist=dist --build-clean --disabled-treeshake --port=4560 --src-base=src
+
+
+```
