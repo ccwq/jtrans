@@ -9,14 +9,15 @@ const args = require('minimist')(
         boolean: [
             "build-clean",
             "tree-shake",
-
+            "disabled-tree-shake",
+            "disabled-treeshake",
         ]
     }
 )
 
+const cwd = process.env.INIT_CWD;
 
-console.log(args);
-
+args.__cwd = cwd;
 
 module.exports = {
     init(...rest){
@@ -27,12 +28,12 @@ module.exports = {
             task = "build";
         }
 
-
-        console.log("arg", ...rest);
-        //console.log(process,  7789);
-        console.log(process.env.INIT_CWD,  7789);
+        // console.log(args);
+        //
+        // console.log("arg", ...rest);
+        // //console.log(process,  7789);
+        // console.log(process.env.INIT_CWD,  7789);
         // gulp.start("build");
-
 
         createTask(args);
 

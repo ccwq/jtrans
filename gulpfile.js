@@ -16,9 +16,7 @@ const trim = function(string){
     return (string + "").replace(/(^\s+)|(\s+$)/, "");
 }
 
-
 //js压缩和sourcemap
-var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 
 
@@ -40,7 +38,6 @@ const plugins = require('gulp-load-plugins')();
 const filterSize = require('gulp-filter-size');
 const fileinfo = require('gulp-fileinfo');
 
-
 const rename = require('gulp-rename');
 const path = require("path");
 
@@ -61,6 +58,7 @@ module.exports = {
         }
 
         const options = _.merge({}, {
+            __cwd:__dirname,
 
             //端口
             port: 3562,
@@ -79,6 +77,13 @@ module.exports = {
             treeShake: true,
 
 
+            //禁止treeShake 代替treeShake=false
+            disabledTreeShake: false,
+
+            //作用同上
+            disabledTreeshake: false,
+
+
             //请查看glup的文档gulp.src(src,option)
             gulpSrcOptions:{
                 base:"--"
@@ -91,20 +96,23 @@ module.exports = {
         }, outOptions);
 
 
+        //参数矫正
+        if (options.disabledTreeShake || options.disabledTreeshake) {
+            options.treeShake = false;
+        }
+
         if (options.srcBase !== "--") {
             options.gulpSrcOptions.base = srcBase;
         }
-
-
 
         if (options.gulpSrcOptions.base == "--") {
             options.gulpSrcOptions.base = options.src;
         }
 
-
-
-        const SRC_DIR = options.src;
+        const SRC_DIR = (options.src + "/").replace(/\/\/$/, "/");
         const DIST_DIR = options.dist;
+
+        console.log(113, options);
 
         //其他类型的文件范式
         const OTHER_FILE_SRC = [
@@ -121,7 +129,6 @@ module.exports = {
 
         const golbForEs  =  [`${SRC_DIR}**/!($*).?(es|mjs)`];
         const golbForAllEs  =  [`${SRC_DIR}**/*.?(es|mjs|html|pug)`];
-
 
 
         /**
@@ -368,7 +375,7 @@ module.exports = {
         });
 
 
-        gulp.task("watch-them", async function () {
+        gulp.task("watch", async function () {
 
             await gulp.series(":pug", ":less", ":es")();
 
@@ -485,7 +492,7 @@ module.exports = {
         /**
          * 调试模式
          */
-        gulp.task("dev", gulp.parallel("watch-them",":live-server"));
+        gulp.task("dev", gulp.parallel("watch",":live-server"));
 
     }
 }
