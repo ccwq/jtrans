@@ -45,6 +45,7 @@ const path = require("path");
 const isDev = process.env.NODE_ENV != "production";
 
 
+
 module.exports = {
 
     /**
@@ -58,6 +59,7 @@ module.exports = {
         }
 
         const options = _.merge({}, {
+
             __cwd:__dirname,
 
             //端口
@@ -96,6 +98,11 @@ module.exports = {
         }, outOptions);
 
 
+        const resolvePath = function(_path){
+            return path.join(options.__, _path);
+        }
+
+
         //参数矫正
         if (options.disabledTreeShake || options.disabledTreeshake) {
             options.treeShake = false;
@@ -111,8 +118,6 @@ module.exports = {
 
         const SRC_DIR = (options.src + "/").replace(/\/\/$/, "/");
         const DIST_DIR = options.dist;
-
-        console.log(113, options);
 
         //其他类型的文件范式
         const OTHER_FILE_SRC = [
@@ -278,7 +283,7 @@ module.exports = {
 
                                         //相对路径
                                     }else{
-                                        dirPath = fileDirPath.replace(__dirname + path.sep, "");
+                                        dirPath = fileDirPath.replace(options.__cwd + path.sep, "");
 
                                         //转化为linux路径
                                         dirPath = dirPath.split(path.sep).join("/");
@@ -299,7 +304,7 @@ module.exports = {
                                 });
                                 html = fn({
                                     resolve_path(_path){
-                                        return path.join(__dirname, _path)
+                                        return resolvePath(_path);
                                     }
                                 });
                                 html = html.replace(/&amp;/g, "&");
@@ -358,9 +363,9 @@ module.exports = {
                     plugins: [autoprefixPlugin],
                     javascriptEnabled: true,
                     path:[
-                        path.join(__dirname, ""),
-                        path.join(__dirname, SRC_DIR),
-                        path.join(__dirname, "/node_modules"),
+                        resolvePath(""),
+                        resolvePath(SRC_DIR),
+                        resolvePath("/node_modules"),
                     ]
                 }))
                 .pipe(globalRepalce())
