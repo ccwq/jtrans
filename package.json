@@ -19,7 +19,10 @@
         "build": "gulp build",
         "build-no-clean": "gulp build-no-clean",
         "build-prod": "cross-env NODE_ENV=production gulp build-no-clean",
-        "watch": "gulp watch-them"
+        "watch": "gulp watch-them",
+        "publish major": "snpm version major && snpm publish",
+        "publish minor": "snpm version minor && snpm publish",
+        "publish patch": "snpm version patch && snpm publish"
     },
     "dependencies": {
         "lodash": "^4.17.11",
