@@ -210,7 +210,6 @@ module.exports = {
                 .pipe(plugins.plumber())
                 .pipe(fileinfo())
 
-
                 .pipe(
                     rollup(
                         {
