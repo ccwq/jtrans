@@ -10,6 +10,7 @@ const _ = require("lodash");
 const rollupResolve = require("@rollup/plugin-node-resolve").default;
 const rollupCommonjs = require("@rollup/plugin-commonjs");
 const rollupPostcss = require("rollup-plugin-postcss");
+const pipeSelf = require("gulp-empty");
 
 const trim = function(string){
     return (string + "").replace(/(^\s+)|(\s+$)/, "");
@@ -200,8 +201,12 @@ module.exports = {
         const pug = require('pug');
         gulp.task(':es', async function () {
             console.log(chalk.green("开始编译es"));
+
+
+
             await gulp
                 .src(golbForEs, options.gulpSrcOptions)
+                .pipe(isDev?sourcemaps.init():pipeSelf())
                 .pipe(plugins.plumber())
                 .pipe(fileinfo())
 
@@ -342,6 +347,7 @@ module.exports = {
                     path.extname=".js"
                 }))
                 .pipe(fileinfo())
+                .pipe(isDev?sourcemaps.write("./"):pipeSelf())
                 // .pipe(uglify({
                 //     compress:{
                 //         drop_debugger:false,
