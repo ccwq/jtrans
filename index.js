@@ -1,5 +1,5 @@
 const gulp = require("gulp");
-require("./gulpfile");
+const {createTask} = require("./gulpfile");
 
 
 const rawArgv = process.argv.slice(2);
@@ -32,6 +32,10 @@ module.exports = {
         //console.log(process,  7789);
         console.log(process.env.INIT_CWD,  7789);
         // gulp.start("build");
+
+
+        createTask(args);
+
         gulp.series(task)();
 
     }
