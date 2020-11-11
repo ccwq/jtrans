@@ -13,6 +13,9 @@ const rollupPostcss = require("rollup-plugin-postcss");
 const rollupVue = require("rollup-plugin-vue");
 const rollupLess = require("rollup-plugin-less");
 
+const {terser} = require("rollup-plugin-terser");
+
+
 const pipeSelf = require("gulp-empty");
 
 const trim = function(string){
@@ -20,7 +23,7 @@ const trim = function(string){
 }
 
 //js压缩和sourcemap
-var sourcemaps = require('gulp-sourcemaps');
+const sourcemaps = require('gulp-sourcemaps');
 
 const chalk = require('chalk');
 
@@ -256,6 +259,10 @@ module.exports = {
                                     exclude: "node_modules/**" // 排除node_modules下的文件
                                 }),
                                 rollupPostcss(),
+
+
+                                //压缩
+                                terser(),
                             ]
                         },
                         {
