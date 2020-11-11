@@ -1,6 +1,5 @@
 // 加载gulp
 const gulp = require('gulp');
-// const babel = require('gulp-babel');
 const zip = require('gulp-zip');
 const gulpClean = require('gulp-clean');
 const watch = require('gulp-watch');
