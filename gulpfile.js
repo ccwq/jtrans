@@ -99,7 +99,7 @@ module.exports = {
 
 
         const resolvePath = function(_path){
-            return path.join(options.__, _path);
+            return path.join(options.__cwd, _path);
         }
 
 
